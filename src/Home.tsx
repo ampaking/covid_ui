@@ -1,43 +1,71 @@
-import React from 'react';
-import { Breadcrumb, Layout, Menu } from 'antd';
+import { useState } from 'react';
+import { Card, Layout } from 'antd';
+import { Overview, Prevention, Symptoms } from './components';
+import banner from './files/banner.png';
+import './App.css';
 
-const { Header, Content, Footer } = Layout;
+const { Content, Footer } = Layout;
 
-const Home: React.FC = () => {
+// Tab list
+const tabList = [
+  {
+    key: 'overview',
+    tab: 'Overview',
+  },
+  {
+    key: 'prevention',
+    tab: 'Prevention',
+  },
+  {
+    key: 'symptoms',
+    tab: 'Symptoms',
+  },
+];
+
+const Home = () => {
+  // use useState for set tab active key
+  const [activeTabKey, setActiveTabKey] = useState<string>('overview');
+
+  // Tab Content list
+  const contentList: Record<string, React.ReactNode> = {
+    overview: <Overview />,
+    prevention: <Prevention />,
+    symptoms: <Symptoms />,
+  };
+  const onTabChange = (key: string) => {
+    setActiveTabKey(key);
+  };
   return (
-    <Layout>
-      <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
-        <div className="logo" />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={['2']}
-          items={new Array(3).fill(null).map((_, index) => ({
-            key: String(index + 1),
-            label: `nav ${index + 1}`,
-          }))}
+    <>
+      <div>
+        {/* Banner image */}
+        <img
+          style={{ width: '100%', height: '300px' }}
+          src={banner}
+          alt="Banner"
         />
-      </Header>
-      <Content
-        className="site-layout"
-        style={{ padding: '0 50px', marginTop: 64 }}
-      >
-        <Breadcrumb style={{ margin: '16px 0' }}>
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
-          <Breadcrumb.Item>List</Breadcrumb.Item>
-          <Breadcrumb.Item>App</Breadcrumb.Item>
-        </Breadcrumb>
-        <div
-          className="site-layout-background"
-          style={{ padding: 24, minHeight: 380 }}
-        >
-          Content
-        </div>
-      </Content>
-      <Footer style={{ textAlign: 'center' }}>
-        Ant Design ©2018 Created by Ant UED
-      </Footer>
-    </Layout>
+      </div>
+      <Layout className="App">
+        <Content>
+          {/* Card to show Covid information */}
+          <Card
+            title={'Coronavirus disease (COVID-19)'}
+            tabList={tabList}
+            activeTabKey={activeTabKey}
+            onTabChange={(key) => {
+              onTabChange(key);
+            }}
+          >
+            {contentList[activeTabKey]}
+          </Card>
+        </Content>
+        {/* Footer start */}
+        <Footer style={{ textAlign: 'center' }}>
+          {`© Corpy&Co., Inc. 2017.`}
+        </Footer>
+        {/* Footer End */}
+      </Layout>
+    </>
   );
 };
 export default Home;
